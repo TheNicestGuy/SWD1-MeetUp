@@ -78,8 +78,8 @@ gulp.task("dist-js", ["lint", "tests"], function() {
 });
 
 gulp.task("dist-html", function() {
-  gulp.src("**/*.html")
-      .pipe(gulp.dest("./dist"))
+  gulp.src("./*.html")
+      .pipe(gulp.dest("dist"))
   ;
   // TODO: Probably need a step to merge the <script> blocks of the dev files
   // into a single <script> for all.js.
