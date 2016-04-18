@@ -1,13 +1,22 @@
 /*eslint-env node, jasmine, phantomjs */
+"use strict";
 
 var gulp = require("gulp");
+var path = require("path");
 var browserSync = require("browser-sync").create();
+var historyApiFallback = require('connect-history-api-fallback');
 var sass = require("gulp-sass");
 var autoPrefixer = require("gulp-autoprefixer");
 var eslint = require("gulp-eslint");
 var jasmine = require("gulp-jasmine-phantom");
 var concat = require("gulp-concat");
 var uglify = require("gulp-uglify");
+
+var DIST = "dist";
+
+var dist = function(subpath) {
+  return !subpath ? DIST : path.join(DIST, subpath);
+};
 
 gulp.task("styles", function() {
   gulp.src("scss/**/*.scss")
@@ -38,7 +47,19 @@ gulp.task("watch", ["styles", "lint"], function() {
   gulp.watch("scss/**/*.scss", ["styles"]);
   gulp.watch("js/**/*.js", ["lint"]);
   gulp.watch("./**/*.html").on("change", browserSync.reload);
-  browserSync.init({server: "./"});
+  browserSync.init({
+    server: {
+      baseDir: ["./"]
+      ,middleware: [historyApiFallback()]
+    }
+    ,logPrefix: "Ronday"
+    ,snippetOptions: {
+      rule: {
+        match: "<span id=\"browser-sync-binding\"></span>"
+        ,fn: function(snippet) {return snippet;}
+      }
+    }
+  });
 });
 
 gulp.task("tests", ["lint"], function () {
@@ -59,13 +80,13 @@ gulp.task("dist-styles", function() {
       .pipe(autoPrefixer({
         browsers: ["last 2 versions"]
       }))
-      .pipe(gulp.dest("dist/css"))
+      .pipe(gulp.dest(dist("css")))
   ;
 });
 
 gulp.task("dist-img", function() {
   gulp.src("img/*")
-      .pipe(gulp.dest("dist/img"))
+      .pipe(gulp.dest(dist("img")))
   ;
 });
 
@@ -73,13 +94,13 @@ gulp.task("dist-js", ["lint", "tests"], function() {
   gulp.src("js/**/*.js")
       .pipe(concat("all.js"))
       .pipe(uglify())
-      .pipe(gulp.dest("dist/js"))
+      .pipe(gulp.dest(dist("js")))
   ;
 });
 
 gulp.task("dist-html", function() {
   gulp.src("./*.html")
-      .pipe(gulp.dest("dist"))
+      .pipe(gulp.dest(dist()))
   ;
   // TODO: Probably need a step to merge the <script> blocks of the dev files
   // into a single <script> for all.js.
