@@ -88,7 +88,40 @@
 
             <section data-route="register">
               <paper-material elevation="1">
-                <p>New-user form goes here.</p>
+                <form is="iron-form" id="frmRegister"
+                  method="post"
+                  action="#"
+                >
+                  <paper-input-container id="picRegisterEmail">
+                    <label>Email address</label>
+                    <input is="iron-input" name="email"
+                      type="email"
+                      autocomplete="email"
+                      inputmode="email"
+                      required
+                      autofocus
+                    ></input>
+                  </paper-input-container>
+                  <paper-input id="inpRegisterPassword" name="password"
+                    label="Choose a password"
+                    placeholder=""
+                    type="password"
+                    autocomplete="new-password"
+                    inputmode="verbatim"
+                    required
+                  ></paper-input>
+                  <paper-input id="inpRegisterPasswordConfirm" name="confirm-password"
+                    label="Re-enter password"
+                    placeholder=""
+                    type="password"
+                    autocomplete="new-password"
+                    inputmode="verbatim"
+                    required
+                  ></paper-input>
+                  <paper-button id="btnRegisterSubmit"
+                    raised
+                  >Register</paper-button>
+                </form>
               </paper-material>
             </section>
 
